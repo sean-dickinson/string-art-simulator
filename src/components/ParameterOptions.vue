@@ -26,14 +26,26 @@
             <option v-for="c in colorOpts" :value="c" :key="c">{{c}}</option>
           </b-select>
         </b-field>
+        <div v-if="color && color.indexOf(',') > 0">
+          <b-radio
+            @input="$emit('update: colorMode', $event)"
+            :native-value="colorMode"
+            name="colorMode"
+          >Alternate</b-radio>
+          <b-radio
+            @input="$emit('update: colorMode', $event)"
+            :native-value="colorMode"
+            name="colorMode"
+          >Half and Half</b-radio>
+        </div>
       </div>
       <div class="column">
-           <b-field label="Shape">
-            <b-select :value="shape" @input="$emit('update:shape', $event)">
-                <option value="circle">Circle</option>
-                <option value="oval">Oval</option>
-            </b-select>
-            </b-field>
+        <b-field label="Shape">
+          <b-select :value="shape" @input="$emit('update:shape', $event)">
+            <option value="circle">Circle</option>
+            <option value="oval">Oval</option>
+          </b-select>
+        </b-field>
       </div>
     </section>
   </div>
@@ -55,7 +67,9 @@ export default class ParameterOptions extends Vue {
     "green",
     "indigo",
     "violet",
+    "red, black"
   ];
+  @Prop() private colorMode!: string;
   @Prop() private numButts!: number;
   @Prop() private numHoles!: number;
   @Prop() private color!: string;
