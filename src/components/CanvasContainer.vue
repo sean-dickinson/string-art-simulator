@@ -1,26 +1,28 @@
 <template>
   <div class="canvas-container">
     <div class="card">
-      <header class="card-header">
-        <h1 class="card-header-title">String Art Simulator</h1>
-      </header>
       <div class="card-image">
         <canvas :width="width" :height="height" id="drawingBoard"></canvas>
       </div>
-      <div class="card-content">
-        <parameter-options
-          :shape.sync="shape"
-          :color.sync="color"
-          :numHoles.sync="holes"
-          :numButts.sync="butts"
-          :colorMode.sync="colorMode"
-        ></parameter-options>
+      <div class="card-footer">
+        
+          <a class="card-footer-item" @click="draw">Draw</a>
+
+          <a class="card-footer-item" @click="reset">Reset</a>
       </div>
-      <footer class="card-footer">
-        <a class="card-footer-item" type="is-primary" @click="draw">Draw</a>
-        <a class="card-footer-item" type="is-warning" @click="clear">Clear</a>
-      </footer>
     </div>
+    <b-collapse class="panel">
+      <div slot="trigger" class="panel-heading" role="button">
+        <strong>Options</strong>
+      </div>
+      <parameter-options
+        :shape.sync="shape"
+        :color.sync="color"
+        :numHoles.sync="holes"
+        :numButts.sync="butts"
+        :colorMode.sync="colorMode"
+      ></parameter-options>
+    </b-collapse>
   </div>
 </template>
 
@@ -40,7 +42,7 @@ export default class CanvasContainer extends Vue {
   color: string = "red";
   shape: string = "circle";
   hasStrings: boolean = false;
-  colorMode: string = "Alternate";
+  colorMode: string = "Switch";
   canvasElement!: HTMLCanvasElement;
   @Prop({ default: 515 }) private width!: number;
   @Prop({ default: 515 }) private height!: number;
@@ -87,6 +89,15 @@ export default class CanvasContainer extends Vue {
     }
   }
 
+  @Watch("colorMode")
+  onColorModeChanges() {
+    this.clear();
+    this.drawPoints();
+    if (this.hasStrings) {
+      this.drawStrings();
+    }
+  }
+
   get a(): number {
     return this.shape === "circle" ? 250 : 250;
   }
@@ -108,7 +119,13 @@ export default class CanvasContainer extends Vue {
   }
 
   get colorList(): string[] {
-    return this.color.split(",").map((c) => c.trim());
+    return this.color.split(",").map(c => c.trim());
+  }
+
+  reset(): void {
+    this.clear();
+    this.drawPoints();
+    this.hasStrings = false;
   }
 
   clear(): void {
@@ -122,11 +139,8 @@ export default class CanvasContainer extends Vue {
       if (this.colorMode === "Alternate") {
         return this.colorList[num % this.colorList.length];
       } else {
-        if (num <= this.holes / 2) {
-          return this.colorList[0];
-        } else {
-          return this.colorList[1];
-        }
+        const index = Math.floor(num / (this.holes / this.colorList.length));
+        return this.colorList[index];
       }
     }
   }
@@ -140,11 +154,11 @@ export default class CanvasContainer extends Vue {
 
   draw() {
     this.drawPoints();
+    this.hasStrings = true;
     this.drawStrings();
   }
 
   drawStrings() {
-    this.ctx.strokeStyle = this.color;
     for (let i = 0; i < this.holes; i++) {
       this.ctx.strokeStyle = this.getColor(i);
       let radius = this.getCurrentRadius(i);

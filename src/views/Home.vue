@@ -1,6 +1,9 @@
 <template>
   <div class="home">
-    <canvas-container />
+    <section class="section">
+      <h1 class="title has-text-left">String Art Simulator</h1>
+      <canvas-container />
+    </section>
   </div>
 </template>
 
