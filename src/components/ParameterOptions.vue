@@ -58,7 +58,6 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 export default class ParameterOptions extends Vue {
   buttsOpts: number[] = [1, 2, 3, 4, 5, 6, 7, 8];
   colorOpts: string[] = [
-    "#7957d5",
     "red",
     "yellow",
     "orange",

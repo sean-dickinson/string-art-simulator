@@ -2,13 +2,12 @@
   <div class="canvas-container">
     <div class="card">
       <div class="card-image">
-        <canvas :width="width" :height="height" id="drawingBoard"></canvas>
+        <canvas :width="width" :height="height" id="drawingBoard" @click="handleMouseMove"></canvas>
       </div>
       <div class="card-footer">
-        
-          <a class="card-footer-item" @click="draw">Draw</a>
+        <a class="card-footer-item" @click="draw">Draw</a>
 
-          <a class="card-footer-item" @click="reset">Reset</a>
+        <a class="card-footer-item" @click="reset">Reset</a>
       </div>
     </div>
     <b-collapse class="panel">
@@ -43,6 +42,8 @@ export default class CanvasContainer extends Vue {
   shape: string = "circle";
   hasStrings: boolean = false;
   colorMode: string = "Switch";
+  chooseHole: boolean = true;
+  private holeList: Point[] = [];
   canvasElement!: HTMLCanvasElement;
   @Prop({ default: 515 }) private width!: number;
   @Prop({ default: 515 }) private height!: number;
@@ -122,6 +123,40 @@ export default class CanvasContainer extends Vue {
     return this.color.split(",").map(c => c.trim());
   }
 
+  handleMouseMove(e: MouseEvent): void {
+    if (this.chooseHole) {
+      // if selecting a hole, handle the mouse. Otherwise don't
+      const point: Point = { x: e.offsetX, y: e.offsetY, color: "black" };
+      const foundIndex = this.holeList.findIndex(p =>
+        this.doesOverlap(point, p, 2)
+      );
+      if (foundIndex > -1) {
+        this.holeList[foundIndex].color = "red";
+        this.holeList = this.holeList.map((p, i) =>
+          i !== foundIndex ? { ...p, color: "black" } : { ...p }
+        );
+        this.holeList = [...this.holeList.slice(foundIndex), ...this.holeList.slice(0, foundIndex)];
+        this.clear();
+        this.drawPoints(false);
+      }
+    }
+    return;
+  }
+
+  doesOverlap(
+    selectedPoint: Point,
+    checkPoint: Point,
+    radius: number
+  ): boolean {
+    const isXRange =
+      selectedPoint.x <= checkPoint.x + radius &&
+      selectedPoint.x >= checkPoint.x - radius;
+    const isYRange =
+      selectedPoint.y <= checkPoint.y + radius &&
+      selectedPoint.y >= checkPoint.y - radius;
+    return isXRange && isYRange;
+  }
+
   reset(): void {
     this.clear();
     this.drawPoints();
@@ -153,7 +188,7 @@ export default class CanvasContainer extends Vue {
   }
 
   draw() {
-    this.drawPoints();
+    this.drawPoints(false);
     this.hasStrings = true;
     this.drawStrings();
   }
@@ -161,29 +196,9 @@ export default class CanvasContainer extends Vue {
   drawStrings() {
     for (let i = 0; i < this.holes; i++) {
       this.ctx.strokeStyle = this.getColor(i);
-      let radius = this.getCurrentRadius(i);
-      const fromPoint = {
-        x:
-          this.a +
-          this.margin / 2 +
-          radius * Math.cos(i * this.d_theta + Math.PI / 2),
-        y:
-          (this.height - 2 * this.b) / 2 +
-          this.b +
-          radius * Math.sin(i * this.d_theta + Math.PI / 2)
-      };
+      const fromPoint = this.holeList[i];
       const n = ((this.butts + 1) * i + this.holes / 2) % this.holes;
-      radius = this.getCurrentRadius(n);
-      const endPoint = {
-        x:
-          this.a +
-          this.margin / 2 +
-          radius * Math.cos(n * this.d_theta + Math.PI / 2),
-        y:
-          (this.height - 2 * this.b) / 2 +
-          this.b +
-          radius * Math.sin(n * this.d_theta + Math.PI / 2)
-      };
+      const endPoint = this.holeList[n];
       this.ctx.beginPath();
       this.ctx.moveTo(fromPoint.x, fromPoint.y);
       this.ctx.lineTo(endPoint.x, endPoint.y);
@@ -192,25 +207,40 @@ export default class CanvasContainer extends Vue {
     this.hasStrings = true;
   }
 
-  drawPoints() {
-    this.ctx.strokeStyle = "black";
-    this.ctx.fillStyle = "black";
-    for (let i = 0; i < this.holes; i++) {
+  generatePoints(): Point[]{
+    const points = [];
+     for (let i = 0; i < this.holes; i++) {
       const radius = this.getCurrentRadius(i);
-      const point = {
-        x:
-          this.a +
-          this.margin / 2 +
-          radius * Math.cos(i * this.d_theta + Math.PI / 2),
-        y:
-          (this.height - 2 * this.b) / 2 +
-          this.b +
-          radius * Math.sin(i * this.d_theta + Math.PI / 2)
-      };
+      const point: Point = {
+          x:
+            this.a +
+            this.margin / 2 +
+            radius * Math.cos(i * this.d_theta + Math.PI / 2),
+          y:
+            (this.height - 2 * this.b) / 2 +
+            this.b +
+            radius * Math.sin(i * this.d_theta + Math.PI / 2),
+          color: "black"
+        };
+        points.push(point);
+      }
+      return points;
+  }
+
+  drawPoints(reset = true) {
+    if (reset) {
+      this.holeList = this.generatePoints();
+    }
+
+    for(const point of this.holeList){
+
+      this.ctx.strokeStyle = point.color;
+      this.ctx.fillStyle = point.color;
       this.ctx.beginPath();
       this.ctx.arc(point.x, point.y, 2, 0, 2 * Math.PI);
       this.ctx.fill();
     }
+     
   }
 }
 </script>
