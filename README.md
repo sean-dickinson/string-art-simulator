@@ -1,24 +1,7 @@
-# string-art-vue
+# String Art Simulator
 
-## Project setup
-```
-npm install
-```
+[Live Site](https://string-art-simulator.firebaseapp.com)
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Description
+This is a modular string art simulator. Modular string art is a great application of modular arithmatic.
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
