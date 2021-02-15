@@ -18,7 +18,7 @@
         :shape.sync="shape"
         :color.sync="color"
         :numHoles.sync="holes"
-        :numButts.sync="butts"
+        :numCusps.sync="cusps"
         :colorMode.sync="colorMode"
       ></parameter-options>
     </b-collapse>
@@ -36,15 +36,39 @@ import { Point } from "@/models/models";
   }
 })
 export default class CanvasContainer extends Vue {
-  butts: number = 1;
+
+  get a(): number {
+    return this.shape === "circle" ? 250 : 250;
+  }
+
+  get b(): number {
+    return this.shape === "circle" ? 250 : 150;
+  }
+
+  get d_theta(): number {
+    return (2 * Math.PI) / this.holes;
+  }
+
+  get ctx(): CanvasRenderingContext2D {
+    return this.canvasElement.getContext("2d") as CanvasRenderingContext2D;
+  }
+
+  get margin(): number {
+    return 15;
+  }
+
+  get colorList(): string[] {
+    return this.color.split(",").map((c) => c.trim());
+  }
+  cusps: number = 1;
   holes: number = 180;
   color: string = "red";
   shape: string = "circle";
   hasStrings: boolean = false;
   colorMode: string = "Switch";
   chooseHole: boolean = true;
-  private holeList: Point[] = [];
   canvasElement!: HTMLCanvasElement;
+  private holeList: Point[] = [];
   @Prop({ default: 515 }) private width!: number;
   @Prop({ default: 515 }) private height!: number;
   mounted() {
@@ -72,8 +96,8 @@ export default class CanvasContainer extends Vue {
     }
   }
 
-  @Watch("butts")
-  onButtsChanges() {
+  @Watch("cusps")
+  oncuspsChanges() {
     this.clear();
     this.drawPoints();
     if (this.hasStrings) {
@@ -99,35 +123,11 @@ export default class CanvasContainer extends Vue {
     }
   }
 
-  get a(): number {
-    return this.shape === "circle" ? 250 : 250;
-  }
-
-  get b(): number {
-    return this.shape === "circle" ? 250 : 150;
-  }
-
-  get d_theta(): number {
-    return (2 * Math.PI) / this.holes;
-  }
-
-  get ctx(): CanvasRenderingContext2D {
-    return this.canvasElement.getContext("2d") as CanvasRenderingContext2D;
-  }
-
-  get margin(): number {
-    return 15;
-  }
-
-  get colorList(): string[] {
-    return this.color.split(",").map(c => c.trim());
-  }
-
   handleMouseMove(e: MouseEvent): void {
     if (this.chooseHole) {
       // if selecting a hole, handle the mouse. Otherwise don't
       const point: Point = { x: e.offsetX, y: e.offsetY, color: "black" };
-      const foundIndex = this.holeList.findIndex(p =>
+      const foundIndex = this.holeList.findIndex((p) =>
         this.doesOverlap(point, p, 2)
       );
       if (foundIndex > -1) {
@@ -197,7 +197,7 @@ export default class CanvasContainer extends Vue {
     for (let i = 0; i < this.holes; i++) {
       this.ctx.strokeStyle = this.getColor(i);
       const fromPoint = this.holeList[i];
-      const n = ((this.butts + 1) * i + this.holes / 2) % this.holes;
+      const n = ((this.cusps + 1) * i + this.holes / 2) % this.holes;
       const endPoint = this.holeList[n];
       this.ctx.beginPath();
       this.ctx.moveTo(fromPoint.x, fromPoint.y);
@@ -207,9 +207,9 @@ export default class CanvasContainer extends Vue {
     this.hasStrings = true;
   }
 
-  generatePoints(): Point[]{
+  generatePoints(): Point[] {
     const points = [];
-     for (let i = 0; i < this.holes; i++) {
+    for (let i = 0; i < this.holes; i++) {
       const radius = this.getCurrentRadius(i);
       const point: Point = {
           x:
@@ -222,9 +222,9 @@ export default class CanvasContainer extends Vue {
             radius * Math.sin(i * this.d_theta + Math.PI / 2),
           color: "black"
         };
-        points.push(point);
+      points.push(point);
       }
-      return points;
+    return points;
   }
 
   drawPoints(reset = true) {
@@ -232,7 +232,7 @@ export default class CanvasContainer extends Vue {
       this.holeList = this.generatePoints();
     }
 
-    for(const point of this.holeList){
+    for (const point of this.holeList) {
 
       this.ctx.strokeStyle = point.color;
       this.ctx.fillStyle = point.color;
@@ -240,7 +240,7 @@ export default class CanvasContainer extends Vue {
       this.ctx.arc(point.x, point.y, 2, 0, 2 * Math.PI);
       this.ctx.fill();
     }
-     
+
   }
 }
 </script>

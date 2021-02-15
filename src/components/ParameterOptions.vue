@@ -1,8 +1,8 @@
 <template>
   <article class="parameter-options has-text-left">
     <div class="panel-block">
-      <b-field horizontal label="Number of 'Butts'">
-        <b-select :value="numButts" @input="$emit('update:numButts', $event)">
+      <b-field horizontal label="Number of Cusps">
+        <b-select :value="numCusps" @input="$emit('update:numCusps', $event)">
           <option v-for="num in buttsOpts" :value="num" :key="num">{{num}}</option>
         </b-select>
       </b-field>
@@ -69,7 +69,7 @@ export default class ParameterOptions extends Vue {
     "red, blue, orange"
   ];
   @Prop() private colorMode!: string;
-  @Prop() private numButts!: number;
+  @Prop() private numCusps!: number;
   @Prop() private numHoles!: number;
   @Prop() private color!: string;
   @Prop() private shape!: string;
