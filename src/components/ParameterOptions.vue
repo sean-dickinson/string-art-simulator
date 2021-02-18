@@ -64,9 +64,7 @@ export default class ParameterOptions extends Vue {
     "blue",
     "green",
     "indigo",
-    "violet",
-    "purple, green",
-    "red, blue, orange"
+    "violet"
   ];
   @Prop() private colorMode!: string;
   @Prop() private numCusps!: number;
