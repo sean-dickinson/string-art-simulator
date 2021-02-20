@@ -85,6 +85,7 @@ export default class CanvasContainer extends Vue {
     if (this.hasStrings) {
       this.drawStrings();
     }
+    this.$emit('holesUpdate', this.holes);
   }
 
   @Watch("shape")
@@ -103,6 +104,7 @@ export default class CanvasContainer extends Vue {
     if (this.hasStrings) {
       this.drawStrings();
     }
+    this.$emit('cuspsUpdate', this.cusps);
   }
 
   @Watch("color")
