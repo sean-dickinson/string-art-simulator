@@ -1,12 +1,17 @@
 <template>
-    <div class="panel-block">
-      <b-field v-for="(stringColors, index) in colors" :key="index" horizontal label="Color of string">
-        <b-select :value="color" @input="updateColorList($event, index)">
-          <option v-for="c in colorOpts" :value="c" :key="c">{{c}}</option>
-        </b-select>
-        <b-button @click="addStringColor()">Add String Color</b-button>
-      </b-field>
-    </div>
+  <div v-frag>
+    <b-select
+      :value="value"
+      @input="$emit('input', $event)"
+      placeholder="Choose a color"
+    >
+      <option v-for="(c, i) in colorOpts" :value="c" :key="i">{{ c }}</option>
+    </b-select>
+    <p class="control" v-if="removeButton">
+      <b-button type="is-danger" @click="removeColor">Remove</b-button>
+
+    </p>
+  </div>
 </template>
 
 
@@ -14,19 +19,16 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component({
-  name: "ColorSelect"
+  name: "ColorSelect",
 })
 export default class ColorSelect extends Vue {
-    @Prop() colorOpts!: string[];
-    private stringColors: string[] = [];
+  @Prop(Array) colorOpts!: string[];
+  @Prop(String) value!: string;
+  @Prop(Boolean) removeButton!: boolean;
 
-    addStringColor(): void {
-        this.stringColors.push();
-    }
-
-    updateColorList(color: string, index: number): void{
-        if(this.stringColors[index]){
-            this.stringColors[index] = color;
-        }
-    }
+  removeColor(){
+    this.$emit('remove', true);
+  }
 }
+</script>
+

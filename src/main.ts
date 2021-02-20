@@ -4,7 +4,11 @@ import router from './router';
 import Buefy from 'buefy';
 import 'buefy/dist/buefy.css';
 
+//@ts-ignore
+import frag from 'vue-frag';
+
 Vue.config.productionTip = false;
+Vue.directive('frag', frag);
 Vue.use(Buefy);
 new Vue({
   router,

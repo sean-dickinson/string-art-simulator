@@ -18,13 +18,7 @@
         ></b-numberinput>
       </b-field>
     </div>
-    <div class="panel-block">
-      <b-field horizontal label="Color of string">
-        <b-select :value="color" @input="$emit('update:color', $event)">
-          <option v-for="c in colorOpts" :value="c" :key="c">{{c}}</option>
-        </b-select>
-      </b-field>
-    </div>
+     <color-multi-select @input="$emit('update:color', join($event))" :value="selectedColors" :numColors.sync="numColors" :colorOpts="colorOpts"></color-multi-select>
     <div class="panel-block">
       <b-field horizontal label="Color Mode">
             <b-select
@@ -51,9 +45,12 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-
+import ColorMultiSelect from './ColorMultiSelect.vue';
 @Component({
-  name: "ParameterOptions"
+  name: "ParameterOptions",
+  components: {
+    ColorMultiSelect
+  }
 })
 export default class ParameterOptions extends Vue {
   buttsOpts: number[] = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -66,15 +63,24 @@ export default class ParameterOptions extends Vue {
     "indigo",
     "violet"
   ];
+  numColors: number = 1;
   @Prop() private colorMode!: string;
   @Prop() private numCusps!: number;
   @Prop() private numHoles!: number;
   @Prop() private color!: string;
   @Prop() private shape!: string;
+
+  get selectedColors(){
+    return this.color ? this.color.split(','): [];
+  }
+
+  join(s: string[]){
+    return s.join(',');
+  }
 }
 </script>
 
-<style scoped>
+<style >
   .field {
     width: 80%;
   }
