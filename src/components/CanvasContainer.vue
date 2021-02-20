@@ -128,7 +128,8 @@ export default class CanvasContainer extends Vue {
       // if selecting a hole, handle the mouse. Otherwise don't
       const point: Point = { x: e.offsetX, y: e.offsetY, color: "black" };
       const foundIndex = this.holeList.findIndex((p) =>
-        this.doesOverlap(point, p, 2)
+      // create a larger click radius to help with selection
+        this.doesOverlap(point, p, 4)
       );
       if (foundIndex > -1) {
         this.holeList[foundIndex].color = "red";
