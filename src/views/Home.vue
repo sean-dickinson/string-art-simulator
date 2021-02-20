@@ -21,28 +21,27 @@ import { Route } from "vue-router";
   }
 })
 
-export default class Home extends Vue{
+export default class Home extends Vue {
  numHoles: number = 180;
  numCusps: number = 1;
- beforeRouteLeave(to: Route, from:Route, next: Function){
-   if(to.name === 'instructions'){
-     if (+to.params.numHoles === this.numHoles && +to.params.numCusps === this.numCusps){
-      next()
+ beforeRouteLeave(to: Route, from: Route, next: (r?: any) => void) {
+   if (to.name === 'instructions') {
+     if (+to.params.numHoles === this.numHoles && +to.params.numCusps === this.numCusps) {
+      next();
      } else {
-       console.log('Not equal')
-        const obj = {
+       const obj = {
          name: 'instructions',
          params: {
            numHoles: this.numHoles,
            numCusps: this.numCusps
          }
-       }
-        next(obj);
+       };
+       next(obj);
      }
    } else {
      next();
 
    }
  }
-};
+}
 </script>
