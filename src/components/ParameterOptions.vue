@@ -9,13 +9,14 @@
     </div>
     <div class="panel-block">
       <b-field horizontal label="Number of Holes">
-        <b-numberinput
-          min="50"
-          max="1000"
+        <b-select
           :value="numHoles"
-          controls-position="compact"
           @input="$emit('update:numHoles', $event)"
-        ></b-numberinput>
+        >
+        <option v-for="(holeOpt, index) in holeOpts" :key="index" :value="holeOpt">
+          {{holeOpt}}
+        </option>
+        </b-select>
       </b-field>
     </div>
      <color-multi-select @input="$emit('update:color', join($event))" :value="selectedColors" :numColors.sync="numColors" :colorOpts="colorOpts"></color-multi-select>
@@ -63,6 +64,7 @@ export default class ParameterOptions extends Vue {
     "indigo",
     "violet"
   ];
+  holeOpts: number[] = [60, 90, 120, 180];
   numColors: number = 1;
   @Prop() private colorMode!: string;
   @Prop() private numCusps!: number;
@@ -70,11 +72,11 @@ export default class ParameterOptions extends Vue {
   @Prop() private color!: string;
   @Prop() private shape!: string;
 
-  get selectedColors(){
-    return this.color ? this.color.split(','): [];
+  get selectedColors() {
+    return this.color ? this.color.split(',') : [];
   }
 
-  join(s: string[]){
+  join(s: string[]) {
     return s.join(',');
   }
 }

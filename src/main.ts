@@ -4,7 +4,7 @@ import router from './router';
 import Buefy from 'buefy';
 import 'buefy/dist/buefy.css';
 
-//@ts-ignore
+// @ts-ignore
 import frag from 'vue-frag';
 
 Vue.config.productionTip = false;

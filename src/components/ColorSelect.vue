@@ -26,7 +26,7 @@ export default class ColorSelect extends Vue {
   @Prop(String) value!: string;
   @Prop(Boolean) removeButton!: boolean;
 
-  removeColor(){
+  removeColor() {
     this.$emit('remove', true);
   }
 }
