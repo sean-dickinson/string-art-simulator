@@ -9,10 +9,13 @@ import 'buefy/dist/buefy.css';
 // @ts-ignore
 import frag from 'vue-frag';
 
+import store from './store'
+
 Vue.config.productionTip = false;
 Vue.directive('frag', frag);
 Vue.use(Buefy);
 new Vue({
   router,
-  render: (h) => h(App),
+  store,
+  render: (h) => h(App)
 }).$mount('#app');
