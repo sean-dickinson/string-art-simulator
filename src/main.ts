@@ -9,7 +9,7 @@ import 'buefy/dist/buefy.css';
 // @ts-ignore
 import frag from 'vue-frag';
 
-import store from './store'
+import {store} from './store/store.vuex'
 
 Vue.config.productionTip = false;
 Vue.directive('frag', frag);
