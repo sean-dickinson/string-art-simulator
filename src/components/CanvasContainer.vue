@@ -15,11 +15,11 @@
         <strong>Options</strong>
       </div>
       <parameter-options
-        :shape.sync="shape"
-        :color.sync="color"
-        :numHoles.sync="holes"
-        :numCusps.sync="cusps"
-        :colorMode.sync="colorMode"
+        :shape="shape"
+        :color="selectedColors"
+        :numHoles="numHoles"
+        :numCusps="numCusps"
+        :colorMode="stringMode"
       ></parameter-options>
     </b-collapse>
   </div>
@@ -29,6 +29,7 @@
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import ParameterOptions from "@/components/ParameterOptions.vue";
 import { Point } from "@/models/models";
+import params from '@/store/params';
 @Component({
   name: "CanvasContainer",
   components: {
@@ -38,15 +39,15 @@ import { Point } from "@/models/models";
 export default class CanvasContainer extends Vue {
 
   get a(): number {
-    return this.shape === "circle" ? 250 : 250;
+    return params.shape === "circle" ? 250 : 250;
   }
 
   get b(): number {
-    return this.shape === "circle" ? 250 : 150;
+    return params.shape === "circle" ? 250 : 150;
   }
 
   get d_theta(): number {
-    return (2 * Math.PI) / this.holes;
+    return (2 * Math.PI) / params.numHoles;
   }
 
   get ctx(): CanvasRenderingContext2D {
@@ -57,20 +58,34 @@ export default class CanvasContainer extends Vue {
     return 15;
   }
 
-  get colorList(): string[] {
-    return this.color.split(",").map((c) => c.trim());
+  get shape(){
+    return params.shape;
   }
-  cusps: number = 1;
-  holes: number = 180;
-  color: string = "red";
-  shape: string = "circle";
+
+  get numCusps(){
+    return params.numCusps;
+  }
+
+  get numHoles(){
+    return params.numHoles;
+  }
+
+  get selectedColors(){
+    return params.selectedColors;
+  }
+
+  get stringMode(){
+    return params.stringMode;
+  }
+
   hasStrings: boolean = false;
-  colorMode: string = "Switch";
   chooseHole: boolean = true;
   canvasElement!: HTMLCanvasElement;
   private holeList: Point[] = [];
+
   @Prop({ default: 515 }) private width!: number;
   @Prop({ default: 515 }) private height!: number;
+
   mounted() {
     this.canvasElement = document.querySelector(
       "#drawingBoard"
@@ -78,51 +93,38 @@ export default class CanvasContainer extends Vue {
     this.drawPoints();
   }
 
-  @Watch("holes")
-  onHolesChanged() {
+  clearAndDraw(){
     this.clear();
     this.drawPoints();
     if (this.hasStrings) {
       this.drawStrings();
     }
-    this.$emit('holesUpdate', this.holes);
   }
+
 
   @Watch("shape")
   onShapeChanges() {
-    this.clear();
-    this.drawPoints();
-    if (this.hasStrings) {
-      this.drawStrings();
-    }
+    this.clearAndDraw()
   }
 
-  @Watch("cusps")
+    @Watch("numHoles")
+    onHolesChanges() {
+    this.clearAndDraw()
+  }
+
+  @Watch("numCusps")
   oncuspsChanges() {
-    this.clear();
-    this.drawPoints();
-    if (this.hasStrings) {
-      this.drawStrings();
-    }
-    this.$emit('cuspsUpdate', this.cusps);
+  this.clearAndDraw()
   }
 
-  @Watch("color")
+  @Watch("selectedColors")
   onColorChanges() {
-    this.clear();
-    this.drawPoints();
-    if (this.hasStrings) {
-      this.drawStrings();
-    }
+    this.clearAndDraw()
   }
 
-  @Watch("colorMode")
+  @Watch("stringMode")
   onColorModeChanges() {
-    this.clear();
-    this.drawPoints();
-    if (this.hasStrings) {
-      this.drawStrings();
-    }
+  this.clearAndDraw()
   }
 
   handleMouseMove(e: MouseEvent): void {
@@ -171,14 +173,14 @@ export default class CanvasContainer extends Vue {
   }
 
   getColor(num: number): string {
-    if (this.colorList.length === 1) {
-      return this.color;
+    if (this.selectedColors.length === 1) {
+      return this.selectedColors[0];
     } else {
-      if (this.colorMode === "Alternate") {
-        return this.colorList[num % this.colorList.length];
+      if (this.stringMode === "alternate") {
+        return this.selectedColors[num % this.selectedColors.length];
       } else {
-        const index = Math.floor(num / (this.holes / this.colorList.length));
-        return this.colorList[index];
+        const index = Math.floor(num / (this.numHoles / this.selectedColors.length));
+        return this.selectedColors[index];
       }
     }
   }
@@ -197,10 +199,10 @@ export default class CanvasContainer extends Vue {
   }
 
   drawStrings() {
-    for (let i = 0; i < this.holes; i++) {
+    for (let i = 0; i < this.numHoles; i++) {
       this.ctx.strokeStyle = this.getColor(i);
       const fromPoint = this.holeList[i];
-      const n = ((this.cusps + 1) * i + this.holes / 2) % this.holes;
+      const n = ((this.numCusps + 1) * i + this.numHoles / 2) % this.numHoles;
       const endPoint = this.holeList[n];
       this.ctx.beginPath();
       this.ctx.moveTo(fromPoint.x, fromPoint.y);
@@ -212,7 +214,7 @@ export default class CanvasContainer extends Vue {
 
   generatePoints(): Point[] {
     const points = [];
-    for (let i = 0; i < this.holes; i++) {
+    for (let i = 0; i < this.numHoles; i++) {
       const radius = this.getCurrentRadius(i);
       const point: Point = {
           x:

@@ -12,13 +12,9 @@ const routes = [
     component: Home,
   },
   {
-    path: '/instructions/:numHoles/:numCusps',
+    path: '/instructions/',
     name: 'instructions',
     component: Instructions,
-    props: (route: Route) => ({
-      numHoles: route.params.numHoles ? +route.params.numHoles : 90,
-      numCusps: route.params.numCusps ? +route.params.numCusps : 1,
-    })
   }
 ];
 

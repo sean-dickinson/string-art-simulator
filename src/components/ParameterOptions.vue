@@ -2,7 +2,7 @@
   <article class="parameter-options has-text-left">
     <div class="panel-block">
       <b-field horizontal label="Number of Cusps">
-        <b-select :value="numCusps" @input="$emit('update:numCusps', $event)">
+        <b-select :value="numCusps" @input="update('numCusps', $event)">
           <option v-for="num in buttsOpts" :value="num" :key="num">{{num}}</option>
         </b-select>
       </b-field>
@@ -11,7 +11,7 @@
       <b-field horizontal label="Number of Holes">
         <b-select
           :value="numHoles"
-          @input="$emit('update:numHoles', $event)"
+          @input="update('numHoles', $event)"
         >
         <option v-for="(holeOpt, index) in holeOpts" :key="index" :value="holeOpt">
           {{holeOpt}}
@@ -19,23 +19,23 @@
         </b-select>
       </b-field>
     </div>
-     <color-multi-select @input="$emit('update:color', join($event))" :value="selectedColors" :numColors.sync="numColors" :colorOpts="colorOpts"></color-multi-select>
+     <color-multi-select @input="update('selectedColors',$event)" :value="selectedColors" :numColors.sync="numColors" :colorOpts="colorOpts"></color-multi-select>
     <div class="panel-block">
       <b-field horizontal label="Color Mode">
             <b-select
               :value="colorMode"
-              :disabled="color.indexOf(',') < 0"
-              @input="$emit('update:colorMode', $event)"
+              :disabled="selectedColors && selectedColors.length < 2"
+              @input="update('colorMode', $event)"
             >
-              <option value="Alternate">Alternate</option>
-              <option value="Switch">Switch</option>
+              <option value="alternate">Alternate</option>
+              <option value="switch">Switch</option>
             </b-select>
       </b-field>
 
     </div>
     <div class="panel-block">
       <b-field horizontal label="Shape">
-        <b-select :value="shape" @input="$emit('update:shape', $event)">
+        <b-select :value="shape" @input="update('shape', $event)">
           <option value="circle">Circle</option>
           <option value="oval">Oval</option>
         </b-select>
@@ -47,6 +47,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import ColorMultiSelect from './ColorMultiSelect.vue';
+import params from '@/store/params';
 @Component({
   name: "ParameterOptions",
   components: {
@@ -69,16 +70,20 @@ export default class ParameterOptions extends Vue {
   @Prop() private colorMode!: string;
   @Prop() private numCusps!: number;
   @Prop() private numHoles!: number;
-  @Prop() private color!: string;
+  @Prop() private selectedColors!: string[];
   @Prop() private shape!: string;
 
-  get selectedColors() {
-    return this.color ? this.color.split(',') : [];
+  update(prop: string, value: any){
+    const updates: any = {
+      shape: params.updateShape,
+      numCusps: params.updateNumCusps,
+      numHoles: params.updateNumHoles,
+      selectedColors: params.updateColors,
+      colorMode: params.updateStringMode
+    };
+    updates[prop](value);
   }
 
-  join(s: string[]) {
-    return s.join(',');
-  }
 }
 </script>
 
