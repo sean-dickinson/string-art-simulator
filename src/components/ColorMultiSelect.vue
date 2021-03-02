@@ -2,14 +2,15 @@
   <div class="panel-block is-flex-direction-column is-align-items-flex-start">
     <b-field
       :class="{ 'has-addons': index > 0 }"
-      v-for="(color, index) in numColors"
+      v-for="(color, index) in value"
       :key="index"
       horizontal
       :label="index === 0 ? 'Color of String' : null"
     >
       <color-select
         @remove="removeColor(index)"
-        :colorOpts="colorOpts"
+        :value="color"
+        :colorOpts="filteredColorOpts(index)"
         @input="updateColor(index, $event)"
         :removeButton="index > 0"
       />
@@ -49,15 +50,14 @@ export default class ColorMultiSelect extends Vue {
 
   addColor() {
     this.$emit("update:numColors", this.numColors + 1);
-    const newColors = this.value.slice();
-    newColors.push("");
+    const newColors = [...this.value, null];
     this.$emit("input", newColors);
   }
 
   updateColor(i: number, color: string) {
-      const newColors = this.value.slice();
-      newColors[i] = color;
-      this.$emit("input", newColors);
+    const newColors = this.value.slice();
+    newColors[i] = color;
+    this.$emit("input", newColors);
   }
 
   removeColor(i: number) {
@@ -65,6 +65,12 @@ export default class ColorMultiSelect extends Vue {
     newColors.splice(i, 1);
     this.$emit("input", newColors);
     this.$emit("update:numColors", this.numColors - 1);
+  }
+
+  filteredColorOpts(index: number) {
+    const otherColors = this.value.slice();
+    otherColors.splice(index, 1);
+    return this.colorOpts.filter((c) => !otherColors.includes(c));
   }
 }
 </script>

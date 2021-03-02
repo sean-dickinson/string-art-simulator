@@ -5,7 +5,7 @@
       @input="$emit('input', $event)"
       placeholder="Choose a color"
     >
-      <option v-for="(c, i) in colorOpts" :value="c" :key="i">{{ c }}</option>
+      <option v-for="c in colorOpts" :value="c" :key="c">{{ c }}</option>
     </b-select>
     <p class="control" v-if="removeButton">
       <b-button type="is-danger" @click="removeColor">Remove</b-button>

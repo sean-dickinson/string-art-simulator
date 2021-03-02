@@ -16,7 +16,7 @@
       </div>
       <parameter-options
         :shape="shape"
-        :color="selectedColors"
+        :selectedColors="selectedColors"
         :numHoles="numHoles"
         :numCusps="numCusps"
         :colorMode="stringMode"
