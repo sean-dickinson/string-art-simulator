@@ -1,15 +1,15 @@
-import ColorSelect from '../components/ColorSelect.vue'
+import ColorSelect from '../components/ColorSelect.vue';
 import { action } from '@storybook/addon-actions';
 
 export default {
   title: 'Color Select',
   component: ColorSelect,
   excludeStories: /.*Data$/,
-}
+};
 
 export const actionsData = {
   onInput: action('input')
-}
+};
 
 const Template = (args, {argTypes}) => ({
   components: { ColorSelect },
@@ -22,5 +22,5 @@ const Template = (args, {argTypes}) => ({
 
 export const Test = Template.bind({});
 Test.args = {
-  colorOpts: ['red','blue','green']
-}
+  colorOpts: ['red', 'blue', 'green']
+};

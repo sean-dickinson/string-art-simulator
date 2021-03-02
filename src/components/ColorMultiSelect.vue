@@ -85,8 +85,6 @@ export default class ColorMultiSelect extends Vue {
 .text-button:hover {
   cursor: pointer;
 }
-.text-button:disabled {
-}
 
 .field.has-addons .field {
   display: -webkit-box;

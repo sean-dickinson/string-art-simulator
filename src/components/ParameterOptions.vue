@@ -73,7 +73,7 @@ export default class ParameterOptions extends Vue {
   @Prop() private selectedColors!: string[];
   @Prop() private shape!: string;
 
-  update(prop: string, value: any){
+  update(prop: string, value: any) {
     const updates: any = {
       shape: params.updateShape,
       numCusps: params.updateNumCusps,

@@ -1,4 +1,4 @@
-import { Module, VuexModule, Mutation, getModule} from 'vuex-module-decorators'
+import { Module, VuexModule, Mutation, getModule} from 'vuex-module-decorators';
 import store from '@/store';
 import { Shape, StringMode } from '@/models/models';
 
@@ -8,7 +8,7 @@ import { Shape, StringMode } from '@/models/models';
   name: 'params',
   store
 })
-class ParamsModule extends VuexModule{
+class ParamsModule extends VuexModule {
     shape: Shape = 'circle';
     numCusps: number = 1;
     numHoles: number = 180;
@@ -39,7 +39,7 @@ class ParamsModule extends VuexModule{
   updateStringMode(newMode: StringMode) {
     this.stringMode = newMode;
   }
-  
+
 }
 
-export default getModule(ParamsModule)
+export default getModule(ParamsModule);

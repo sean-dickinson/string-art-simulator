@@ -58,23 +58,23 @@ export default class CanvasContainer extends Vue {
     return 15;
   }
 
-  get shape(){
+  get shape() {
     return params.shape;
   }
 
-  get numCusps(){
+  get numCusps() {
     return params.numCusps;
   }
 
-  get numHoles(){
+  get numHoles() {
     return params.numHoles;
   }
 
-  get selectedColors(){
+  get selectedColors() {
     return params.selectedColors;
   }
 
-  get stringMode(){
+  get stringMode() {
     return params.stringMode;
   }
 
@@ -93,7 +93,7 @@ export default class CanvasContainer extends Vue {
     this.drawPoints();
   }
 
-  clearAndDraw(){
+  clearAndDraw() {
     this.clear();
     this.drawPoints();
     if (this.hasStrings) {
@@ -104,27 +104,27 @@ export default class CanvasContainer extends Vue {
 
   @Watch("shape")
   onShapeChanges() {
-    this.clearAndDraw()
+    this.clearAndDraw();
   }
 
     @Watch("numHoles")
     onHolesChanges() {
-    this.clearAndDraw()
+    this.clearAndDraw();
   }
 
   @Watch("numCusps")
   oncuspsChanges() {
-  this.clearAndDraw()
+  this.clearAndDraw();
   }
 
   @Watch("selectedColors")
   onColorChanges() {
-    this.clearAndDraw()
+    this.clearAndDraw();
   }
 
   @Watch("stringMode")
   onColorModeChanges() {
-  this.clearAndDraw()
+  this.clearAndDraw();
   }
 
   handleMouseMove(e: MouseEvent): void {

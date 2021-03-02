@@ -1,8 +1,8 @@
-import ColorMultiSelect from '../components/ColorMultiSelect.vue'
+import ColorMultiSelect from '../components/ColorMultiSelect.vue';
 
 export default {
   title: 'Color Multi Select',
-}
+};
 
 const Template = (args, {argTypes}) => ({
   components: { ColorMultiSelect },
@@ -19,10 +19,10 @@ const Template = (args, {argTypes}) => ({
 
 export const Single = Template.bind({});
 Single.args = {
-  colorOpts: ['red','blue','green']
-}
+  colorOpts: ['red', 'blue', 'green']
+};
 
 export const Double = Template.bind({});
 Double.args = {
-  colorOpts: ['red','blue','green'],
-}
+  colorOpts: ['red', 'blue', 'green'],
+};

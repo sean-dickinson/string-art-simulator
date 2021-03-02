@@ -24,7 +24,7 @@ export default class Instructions extends Vue {
     return params.numCusps;
   }
 
-  get numHoles(){
+  get numHoles() {
     return params.numHoles;
   }
 }
