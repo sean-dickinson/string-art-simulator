@@ -13,14 +13,20 @@
 <script lang="ts">
 import InstructionList from "@/components/InstructionList.vue";
 import { Component, Prop, Vue } from "vue-property-decorator";
+import params from '@/store/params';
 
 @Component({
   name: "Instructions",
   components: {InstructionList}
 })
 export default class Instructions extends Vue {
-  @Prop({type: Number, default: 180}) numHoles!: number;
-  @Prop({type: Number, default: 1}) numCusps!: number;
+  get numCusps() {
+    return params.numCusps;
+  }
+
+  get numHoles(){
+    return params.numHoles;
+  }
 }
 </script>
 
